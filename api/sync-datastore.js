@@ -1,11 +1,8 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
 
-  const { entryKey, data } = req.body || {};
-  if (!entryKey || data === undefined) return res.status(400).json({ error: 'Faltando dados' });
-
+  const { entryKey, data } = req.body;
   const url = `https://apis.roblox.com/cloud/v2/universes/${process.env.ROBLOX_UNIVERSE_ID}/data-stores/PlayerData/entries/${encodeURIComponent(entryKey)}?allow_missing=true`;
 
   try {
@@ -14,7 +11,6 @@ export default async function handler(req, res) {
       headers: { 'x-api-key': process.env.ROBLOX_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ value: data }),
     });
-
     if (!robloxRes.ok) throw new Error(await robloxRes.text());
     return res.status(200).json({ ok: true });
   } catch (error) {
