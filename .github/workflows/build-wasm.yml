@@ -1,0 +1,28 @@
+name: Build Luau WASM
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with: { version: '3.1.61' }
+      - name: Clone Luau
+        run: git clone --depth 1 https://github.com/Roblox/luau.git
+      - name: Compile Luau
+        run: |
+          cd luau
+          emcc VM/src/lvm.cpp -I VM/include -I Compiler/include -I Ast/include -O3 \
+            -sEXPORTED_FUNCTIONS='["_luaL_newstate","_luaL_openlibs","_luaL_loadstring","_lua_pcallk","_lua_pushcclosure","_lua_setglobal","_lua_tolstring","_lua_pushstring","_lua_pushnumber","_lua_tonumber","_malloc","_free"]' \
+            -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap","UTF8ToString"]' \
+            -sALLOW_MEMORY_GROWTH=1 -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXPORT_NAME=createLuau \
+            -o ../public/wasm/luau.js
+      - name: Commit WASM
+        run: |
+          mkdir -p public/wasm
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add public/wasm/
+          git commit -m "Auto-build Luau WASM" || exit 0
+          git push
