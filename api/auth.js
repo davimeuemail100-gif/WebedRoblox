@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     // Validar se a senha bate
     return res.status(200).json({ 
       ok: true, 
-      token: "token_secreto_123", 
+      token: "jadkanagyxbsjbsuzbsbsjsheuskh82", 
       isAdmin: username === 'Exeless' // Só o dono tem Executor
     });
   }
