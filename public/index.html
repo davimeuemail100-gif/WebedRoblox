@@ -3,72 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Roblox Studio</title>
+    <title>Exeless Engine | Futuristic Metaverse</title>
     <style>
-        body { margin: 0; overflow: hidden; display: flex; height: 100vh; font-family: sans-serif; background: #1e1e1e; color: white; }
-        #viewport { flex: 1; position: relative; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        body { margin: 0; background: #050505; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
+        
+        /* Fundo Animado */
+        .bg-glow { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 5s infinite alternate; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+
+        /* Tela de Login (Início) */
+        #login-screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; background: rgba(0,0,0,0.9); transition: opacity 0.5s; }
+        
+        /* Logo Xbox Arco-Íris */
+        .logo-container { width: 120px; height: 120px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
+        .logo-container::before { content: ''; position: absolute; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red); z-index: -1; animation: spin 3s linear infinite; }
+        .logo-xbox { font-size: 60px; color: #fff; font-weight: bold; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .auth-box { display: flex; flex-direction: column; gap: 10px; background: rgba(20,20,20,0.8); padding: 30px; border-radius: 15px; border: 1px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+        input { padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-family: 'Orbitron'; outline: none; }
+        input:focus { border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+        button { padding: 12px; background: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; border-radius: 5px; transition: 0.3s; }
+        button:hover { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
+        
+        #error-msg { color: #ff4444; font-size: 12px; height: 15px; text-align: center; }
+
+        /* A Engine (Oculto até logar) */
+        #game-container { width: 100%; height: 100%; display: none; position: relative; }
         canvas { display: block; }
-        
-        /* CoreGui e Chat */
-        #core-gui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        #chat-box { position: absolute; top: 10px; left: 10px; width: 250px; height: 150px; background: rgba(0,0,0,0.5); border-radius: 5px; overflow-y: auto; padding: 5px; color: white; font-size: 12px; pointer-events: auto; }
-        #chat-input { position: absolute; top: 165px; left: 10px; width: 250px; background: rgba(0,0,0,0.7); border: 1px solid #555; color: white; padding: 5px; border-radius: 5px; pointer-events: auto; display: none; }
-        #voice-btn { position: absolute; bottom: 20px; right: 20px; padding: 15px; background: #0055ff; color: white; border: none; border-radius: 50%; cursor: pointer; pointer-events: auto; font-weight: bold; font-size: 20px; }
-        
-        /* Painel de Código */
-        #sidebar { width: 350px; background: #2d2d2d; display: flex; flex-direction: column; border-left: 2px solid #444; }
-        .code-section { flex: 1; display: flex; flex-direction: column; border-bottom: 1px solid #444; }
-        .code-header { background: #111; padding: 5px; font-size: 12px; font-weight: bold; color: #aaa; }
-        textarea { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; padding: 10px; font-family: monospace; font-size: 12px; resize: none; outline: none; }
-        #play-btn { padding: 15px; background: #00b06b; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
-        #status { padding: 10px; background: #000; color: #00ff00; font-size: 11px; font-family: monospace; height: 100px; overflow-y: auto; }
+
+        /* CoreGui */
+        #core-gui { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
+        .notification { background: rgba(0,255,255,0.2); border-left: 4px solid #00ffff; padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; backdrop-filter: blur(5px); animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+        /* Executor (Apenas Admin) */
+        #executor-panel { display: none; position: absolute; bottom: 10px; left: 10px; width: 400px; background: rgba(0,0,0,0.9); border: 1px solid #ff00ff; border-radius: 5px; z-index: 20; padding: 10px; }
+        #executor-code { width: 100%; height: 100px; background: #111; color: #00ff00; border: none; font-family: monospace; resize: none; outline: none; }
+        #executor-btn { margin-top: 5px; width: 100%; background: #ff00ff; color: #fff; }
     </style>
 </head>
 <body>
-    <div id="viewport">
-        <div id="core-gui">
-            <div id="chat-box"></div>
-            <input type="text" id="chat-input" placeholder="Pressione / para conversar...">
-            <button id="voice-btn">🎤</button>
+    <div class="bg-glow"></div>
+
+    <!-- TELA DE CADASTRO/LOGIN -->
+    <div id="login-screen">
+        <div class="logo-container">
+            <div class="logo-xbox">X</div>
+        </div>
+        <h1 style="margin: 0; color: #00ffff; text-shadow: 0 0 10px #00ffff;">EXELESS ENGINE</h1>
+        <p style="font-size: 12px; color: #888;">Futuristic Game Platform</p>
+        
+        <div class="auth-box">
+            <input type="text" id="username" placeholder="Nome de usuário" autocomplete="off">
+            <input type="password" id="password" placeholder="Senha" autocomplete="off">
+            <div id="error-msg"></div>
+            <button onclick="login()">ENTRAR / CRIAR CONTA</button>
         </div>
     </div>
 
-    <div id="sidebar">
-        <div class="code-section">
-            <div class="code-header">ServerScriptService</div>
-            <textarea id="server-code" spellcheck="false">
--- Roda no Servidor (Worker)
-local DataStore = game:GetService("DataStoreService"):GetDataStore("PlayerData")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local parte = Instance.new("Part")
-parte.Position = {x = 0, y = 2, z = 0}
-parte.Color = "#ff0000"
-
-DataStore:SetAsync("Player_1", {coins = 500})
-game:GetService("Chat"):SendMessage("Servidor", "Servidor iniciado com sucesso!")
-            </textarea>
+    <!-- A ENGINE E O JOGO -->
+    <div id="game-container">
+        <div id="core-gui"></div>
+        
+        <!-- Painel de Executor Secreto (Admin) -->
+        <div id="executor-panel">
+            <div style="color: #ff00ff; font-size: 12px; margin-bottom: 5px;">⚡ ADMIN EXECUTOR</div>
+            <textarea id="executor-code" placeholder="print('Hackeado!')"></textarea>
+            <button id="executor-btn" onclick="executeAdminScript()">EXECUTAR SCRIPT</button>
         </div>
-        <div class="code-section">
-            <div class="code-header">LocalScript (StarterPlayerScripts)</div>
-            <textarea id="client-code" spellcheck="false">
--- Roda no Cliente (Worker)
-local CoreGui = game:GetService("CoreGui")
-local CorePackages = game:GetService("CorePackages")
-
-CoreGui:SetCore("SendNotification", {
-    Title = "Bem-vindo",
-    Text = "O jogo carregou no seu celular!"
-})
-            </textarea>
-        </div>
-        <button id="play-btn">▶ RODAR JOGO</button>
-        <div id="status">Console...</div>
     </div>
 
     <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "luau-web": "https://cdn.jsdelivr.net/gh/xNasuni/luau-web@main/dist/luauweb.min.js"
+            }
+        }
     </script>
-    <script type="module" src="./js/studio.js"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { LuauState } from 'luau-web';
+
+        // 1. VARIÁVEIS GLOBAIS
+        let luauState;
+        let isAdmin = false;
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505); // Fundo escuro futurista
+
+        // 2. SISTEMA DE LOGIN
+        window.login = async function() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errMsg = document.getElementById('error-msg');
+
+            if (!user || !pass) {
+                errMsg.innerText = "Preencha todos os campos.";
+                return;
+            }
+
+            // Chama a API do Vercel
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'register', username: user, password: pass }) // Pode mudar para login
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errMsg.innerText = data.error;
+                    return;
+                }
+
+                // Sucesso!
+                localStorage.setItem('exeless_token', data.token);
+                localStorage.setItem('exeless_user', user);
+                isAdmin = data.isAdmin;
+
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    startEngine();
+                }, 500);
+
+            } catch (e) {
+                errMsg.innerText = "Erro ao conectar no servidor.";
+            }
+        }
+
+        // 3. INICIAR O MOTOR 3D E O LUAU
+        function startEngine() {
+            document.getElementById('game-container').style.display = 'block';
+
+            // Configura 3D
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 10);
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('game-container').appendChild(renderer.domElement);
+            
+            const light = new THREE.DirectionalLight(0xffffff, 2); light.position.set(5, 10, 7); scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040));
+            scene.add(new THREE.GridHelper(50, 50, 0x00ffff, 0x333333)); // Grid ciano
+
+            (function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); })();
+
+            // Se for o Admin (Exeless), mostra o Executor
+            if (isAdmin) {
+                document.getElementById('executor-panel').style.display = 'block';
+            }
+
+            // Inicializa o Luau-Web
+            initLuau();
+        }
+
+        // 4. CONFIGURANDO AS FERRAMENTAS DO LUAU
+        async function initLuau() {
+            luauState = await LuauState.createAsync({
+                print: (msg) => console.log("[Luau]", msg),
+                
+                // Instâncias (Agora com Partes Redondas e Cubos)
+                Instance: {
+                    new: (className) => {
+                        if (className === "Part") {
+                            const geometry = new THREE.BoxGeometry(1, 1, 1);
+                            const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.5 });
+                            const mesh = new THREE.Mesh(geometry, material);
+                            scene.add(mesh);
+                            
+                            // Retorna um objeto com propriedades controláveis pelo Luau
+                            return { 
+                                Name: "Part", 
+                                Position: { x: 0, y: 0, z: 0 },
+                                Shape: "Block",
+                                setPosition: (x, y, z) => mesh.position.set(x, y, z),
+                                setShape: (shape) => { // "Round" para redondo
+                                    let newGeo;
+                                    if(shape === "Round") newGeo = new THREE.SphereGeometry(0.5);
+                                    else if(shape === "Cylinder") newGeo = new THREE.CylinderGeometry(0.5, 0.5, 1);
+                                    else newGeo = new THREE.BoxGeometry(1, 1, 1);
+                                    mesh.geometry.dispose();
+                                    mesh.geometry = newGeo;
+                                },
+                                setColor: (hex) => mesh.material.color.setHex(hex)
+                            };
+                        }
+                        return {};
+                    }
+                },
+
+                // Animação (TweenService)
+                TweenService: {
+                    Create: (obj, info, props) => {
+                        return {
+                            Play: () => {
+                                // Animação básica no Three.js (gambiarra de rotação)
+                                const start = performance.now();
+                                const duration = info.Time * 1000; // segundos para ms
+                                const animateTween = (time) => {
+                                    const elapsed = time - start;
+                                    const progress = Math.min(elapsed / duration, 1);
+                                    if(progress < 1) requestAnimationFrame(animateTween);
+                                    else obj.setPosition(props.x || 0, props.y || 0, props.z || 0);
+                                };
+                                requestAnimationFrame(animateTween);
+                            }
+                        }
+                    }
+                },
+
+                // CoreGui
+                CoreGui: {
+                    SetCore: (action, data) => {
+                        if (action === "SendNotification") {
+                            const gui = document.getElementById('core-gui');
+                            const notif = document.createElement('div');
+                            notif.className = 'notification';
+                            notif.innerHTML = `<b>${data.Title}</b><br>${data.Text}`;
+                            gui.appendChild(notif);
+                            setTimeout(() => notif.remove(), 3000);
+                        }
+                    }
+                },
+
+                game: { GetService: (name) => {
+                    if(name === "TweenService") return LuauState.globals.TweenService;
+                    if(name === "CoreGui") return LuauState.globals.CoreGui;
+                    return {};
+                }}
+            });
+
+            // O Script do Jogo
+            const gameScript = `
+                print("Bem-vindo à Engine do Exeless!")
+                
+                local minhaBola = Instance.new("Part")
+                minhaBola.Shape = "Round" -- Suporte a coisas redondas
+                minhaBola.setShape("Round")
+                minhaBola.setPosition(0, 2, 0)
+                minhaBola.setColor(0xff00ff)
+
+                game:GetService("CoreGui"):SetCore("SendNotification", {
+                    Title = "Exeless Engine",
+                    Text = "A engine carregou perfeitamente!"
+                })
+            `;
+            
+            luauState.loadstring(gameScript)();
+        }
+
+        // 5. O EXECUTOR DO ADMIN
+        window.executeAdminScript = function() {
+            if (!isAdmin || !luauState) return;
+            const code = document.getElementById('executor-code').value;
+            try {
+                luauState.loadstring(code)();
+            } catch (e) {
+                console.error("Erro no Executor:", e);
+            }
+        }
+    </script>
 </body>
 </html>
