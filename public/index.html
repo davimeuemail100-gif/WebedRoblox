@@ -4,71 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exeless Engine | Futuristic Metaverse</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-        
-        body { margin: 0; background: #050505; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
-        
-        /* Fundo Animado */
-        .bg-glow { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 5s infinite alternate; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    body { margin: 0; background: #050505; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
+    .bg-glow { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 5s infinite alternate; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
 
-        /* Tela de Login (Início) */
-        #login-screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; background: rgba(0,0,0,0.9); transition: opacity 0.5s; }
-        
-        /* Logo Xbox Arco-Íris */
-        .logo-container { width: 120px; height: 120px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
-        .logo-container::before { content: ''; position: absolute; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red); z-index: -1; animation: spin 3s linear infinite; }
-        .logo-xbox { font-size: 60px; color: #fff; font-weight: bold; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+    /* Login e Logo (Mantidos) */
+    #login-screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; background: rgba(0,0,0,0.9); transition: opacity 0.5s; }
+    .logo-container { width: 120px; height: 120px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
+    .logo-container::before { content: ''; position: absolute; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red); z-index: -1; animation: spin 3s linear infinite; }
+    .logo-xbox { font-size: 60px; color: #fff; font-weight: bold; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .auth-box { display: flex; flex-direction: column; gap: 10px; background: rgba(20,20,20,0.8); padding: 30px; border-radius: 15px; border: 1px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+    input { padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-family: 'Orbitron'; outline: none; }
+    input:focus { border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+    button { padding: 12px; background: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; border-radius: 5px; transition: 0.3s; }
+    button:hover { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
+    #error-msg { color: #ff4444; font-size: 12px; height: 15px; text-align: center; }
 
-        .auth-box { display: flex; flex-direction: column; gap: 10px; background: rgba(20,20,20,0.8); padding: 30px; border-radius: 15px; border: 1px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-        input { padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-family: 'Orbitron'; outline: none; }
-        input:focus { border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
-        button { padding: 12px; background: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; border-radius: 5px; transition: 0.3s; }
-        button:hover { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
-        
-        #error-msg { color: #ff4444; font-size: 12px; height: 15px; text-align: center; }
+    /* UI do Jogo */
+    #game-container { width: 100%; height: 100%; display: none; position: relative; }
+    #core-gui { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
+    .notification { background: rgba(0,255,255,0.2); border-left: 4px solid #00ffff; padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; backdrop-filter: blur(5px); animation: slideIn 0.5s ease-out; }
+    @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 
-        /* A Engine (Oculto até logar) */
-        #game-container { width: 100%; height: 100%; display: none; position: relative; }
-        canvas { display: block; }
+    /* Painel de Amigos */
+    #friends-panel { display: none; position: absolute; top: 10px; right: 10px; width: 250px; background: rgba(0,0,0,0.9); border: 1px solid #00ffff; border-radius: 5px; z-index: 20; padding: 15px; box-shadow: 0 0 15px rgba(0,255,255,0.3); }
+    #friends-list { max-height: 200px; overflow-y: auto; font-size: 12px; margin-top: 10px; color: #ccc; }
+    #friends-list div { padding: 5px; border-bottom: 1px solid #333; }
+    #friend-input { width: 90%; margin-bottom: 5px; padding: 8px; font-size: 12px; }
+    #add-friend-btn { width: 100%; font-size: 12px; padding: 8px; background: #00ffff; color: #000; }
+    #toggle-friends-btn { position: absolute; top: 10px; right: 10px; z-index: 30; background: #ff00ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; display: none; }
 
-        /* CoreGui */
-        #core-gui { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
-        .notification { background: rgba(0,255,255,0.2); border-left: 4px solid #00ffff; padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; backdrop-filter: blur(5px); animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-
-        /* Executor (Apenas Admin) */
-        #executor-panel { display: none; position: absolute; bottom: 10px; left: 10px; width: 400px; background: rgba(0,0,0,0.9); border: 1px solid #ff00ff; border-radius: 5px; z-index: 20; padding: 10px; }
-        #executor-code { width: 100%; height: 100px; background: #111; color: #00ff00; border: none; font-family: monospace; resize: none; outline: none; }
-        #executor-btn { margin-top: 5px; width: 100%; background: #ff00ff; color: #fff; }
-    </style>
+    /* Executor */
+    #executor-panel { display: none; position: absolute; bottom: 10px; left: 10px; width: 400px; background: rgba(0,0,0,0.9); border: 1px solid #ff00ff; border-radius: 5px; z-index: 20; padding: 10px; }
+    #executor-code { width: 100%; height: 80px; background: #111; color: #00ff00; border: none; font-family: monospace; resize: none; outline: none; }
+    #executor-btn { margin-top: 5px; width: 100%; background: #ff00ff; color: #fff; }
+</style>
 </head>
 <body>
     <div class="bg-glow"></div>
 
-    <!-- TELA DE CADASTRO/LOGIN -->
     <div id="login-screen">
-        <div class="logo-container">
-            <div class="logo-xbox">X</div>
-        </div>
+        <div class="logo-container"><div class="logo-xbox">X</div></div>
         <h1 style="margin: 0; color: #00ffff; text-shadow: 0 0 10px #00ffff;">EXELESS ENGINE</h1>
         <p style="font-size: 12px; color: #888;">Futuristic Game Platform</p>
         
         <div class="auth-box">
-            <input type="text" id="username" placeholder="Nome de usuário" autocomplete="off">
+            <input type="text" id="username" placeholder="Nome (sem espaços)" autocomplete="off">
             <input type="password" id="password" placeholder="Senha" autocomplete="off">
             <div id="error-msg"></div>
             <button onclick="login()">ENTRAR / CRIAR CONTA</button>
         </div>
     </div>
 
-    <!-- A ENGINE E O JOGO -->
     <div id="game-container">
+        <button id="toggle-friends-btn" onclick="toggleFriends()">👥 Amigos</button>
+        
+        <!-- Painel de Amigos -->
+        <div id="friends-panel">
+            <div style="color: #00ffff; font-weight: bold; margin-bottom: 5px;">Sua Lista</div>
+            <input type="text" id="friend-input" placeholder="Nome do amigo" autocomplete="off">
+            <button id="add-friend-btn" onclick="addFriend()">ADICIONAR</button>
+            <div id="friends-list">Carregando...</div>
+        </div>
+
         <div id="core-gui"></div>
         
-        <!-- Painel de Executor Secreto (Admin) -->
         <div id="executor-panel">
             <div style="color: #ff00ff; font-size: 12px; margin-bottom: 5px;">⚡ ADMIN EXECUTOR</div>
             <textarea id="executor-code" placeholder="print('Hackeado!')"></textarea>
@@ -89,58 +92,107 @@
         import * as THREE from 'three';
         import { LuauState } from 'luau-web';
 
-        // 1. VARIÁVEIS GLOBAIS
-        let luauState;
-        let isAdmin = false;
+        let luauState, isAdmin, currentUser;
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050505); // Fundo escuro futurista
+        scene.background = new THREE.Color(0x050505);
 
-        // 2. SISTEMA DE LOGIN
+        // --- LOGIN ---
         window.login = async function() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const errMsg = document.getElementById('error-msg');
 
-            if (!user || !pass) {
-                errMsg.innerText = "Preencha todos os campos.";
-                return;
-            }
+            if (!user || !pass) return errMsg.innerText = "Preencha todos os campos.";
+            if (user.includes(' ')) return errMsg.innerText = "O nome não pode ter espaços.";
 
-            // Chama a API do Vercel
-            try {
-                const res = await fetch('/api/auth', {
+            // Tenta Logar primeiro
+            let res = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'login', username: user, password: pass })
+            });
+            let data = await res.json();
+
+            // Se não existir, tenta cadastrar
+            if (!res.ok && data.error === 'Usuário não encontrado.') {
+                res = await fetch('/api/auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'register', username: user, password: pass }) // Pode mudar para login
+                    body: JSON.stringify({ action: 'register', username: user, password: pass })
                 });
-                const data = await res.json();
+                data = await res.json();
+            }
 
-                if (!res.ok) {
-                    errMsg.innerText = data.error;
-                    return;
-                }
+            if (!res.ok) return errMsg.innerText = data.error;
 
-                // Sucesso!
-                localStorage.setItem('exeless_token', data.token);
-                localStorage.setItem('exeless_user', user);
-                isAdmin = data.isAdmin;
+            // Sucesso
+            isAdmin = data.isAdmin;
+            currentUser = user;
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = 'none';
+                startEngine();
+            }, 500);
+        }
 
-                document.getElementById('login-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('login-screen').style.display = 'none';
-                    startEngine();
-                }, 500);
+        // --- AMIGOS ---
+        window.toggleFriends = function() {
+            const panel = document.getElementById('friends-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if(panel.style.display === 'block') loadFriends();
+        }
 
-            } catch (e) {
-                errMsg.innerText = "Erro ao conectar no servidor.";
+        async function loadFriends() {
+            const res = await fetch('/api/friends', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'list', username: currentUser })
+            });
+            const data = await res.json();
+            const listDiv = document.getElementById('friends-list');
+            listDiv.innerHTML = '';
+            if(data.friends && data.friends.length > 0) {
+                data.friends.forEach(f => listDiv.innerHTML += `<div>🟢 ${f}</div>`);
+            } else {
+                listDiv.innerHTML = '<div>Nenhum amigo ainda.</div>';
             }
         }
 
-        // 3. INICIAR O MOTOR 3D E O LUAU
+        window.addFriend = async function() {
+            const friendName = document.getElementById('friend-input').value;
+            if(!friendName) return;
+            
+            const res = await fetch('/api/friends', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'add', username: currentUser, friendUsername: friendName })
+            });
+            const data = await res.json();
+            
+            if(res.ok) {
+                document.getElementById('friend-input').value = '';
+                loadFriends();
+                showNotification("Amigos", `${friendName} adicionado com sucesso!`);
+            } else {
+                alert(data.error); // Mostra o bloqueio de limite (100 ou 1000)
+            }
+        }
+
+        // --- ENGINE 3D E LUAU (Mantida) ---
+        function showNotification(title, text) {
+            const gui = document.getElementById('core-gui');
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.innerHTML = `<b>${title}</b><br>${text}`;
+            gui.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
         function startEngine() {
             document.getElementById('game-container').style.display = 'block';
+            document.getElementById('toggle-friends-btn').style.display = 'block';
+            if (isAdmin) document.getElementById('executor-panel').style.display = 'block';
 
-            // Configura 3D
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 5, 10);
             const renderer = new THREE.WebGLRenderer();
@@ -149,123 +201,61 @@
             
             const light = new THREE.DirectionalLight(0xffffff, 2); light.position.set(5, 10, 7); scene.add(light);
             scene.add(new THREE.AmbientLight(0x404040));
-            scene.add(new THREE.GridHelper(50, 50, 0x00ffff, 0x333333)); // Grid ciano
+            scene.add(new THREE.GridHelper(50, 50, 0x00ffff, 0x333333));
 
             (function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); })();
-
-            // Se for o Admin (Exeless), mostra o Executor
-            if (isAdmin) {
-                document.getElementById('executor-panel').style.display = 'block';
-            }
-
-            // Inicializa o Luau-Web
             initLuau();
         }
 
-        // 4. CONFIGURANDO AS FERRAMENTAS DO LUAU
         async function initLuau() {
             luauState = await LuauState.createAsync({
                 print: (msg) => console.log("[Luau]", msg),
-                
-                // Instâncias (Agora com Partes Redondas e Cubos)
-                Instance: {
-                    new: (className) => {
-                        if (className === "Part") {
-                            const geometry = new THREE.BoxGeometry(1, 1, 1);
-                            const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.5 });
-                            const mesh = new THREE.Mesh(geometry, material);
-                            scene.add(mesh);
-                            
-                            // Retorna um objeto com propriedades controláveis pelo Luau
-                            return { 
-                                Name: "Part", 
-                                Position: { x: 0, y: 0, z: 0 },
-                                Shape: "Block",
-                                setPosition: (x, y, z) => mesh.position.set(x, y, z),
-                                setShape: (shape) => { // "Round" para redondo
-                                    let newGeo;
-                                    if(shape === "Round") newGeo = new THREE.SphereGeometry(0.5);
-                                    else if(shape === "Cylinder") newGeo = new THREE.CylinderGeometry(0.5, 0.5, 1);
-                                    else newGeo = new THREE.BoxGeometry(1, 1, 1);
-                                    mesh.geometry.dispose();
-                                    mesh.geometry = newGeo;
-                                },
-                                setColor: (hex) => mesh.material.color.setHex(hex)
-                            };
-                        }
-                        return {};
+                Instance: { new: (className) => {
+                    if (className === "Part") {
+                        const geometry = new THREE.BoxGeometry(1, 1, 1);
+                        const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.5 });
+                        const mesh = new THREE.Mesh(geometry, material);
+                        scene.add(mesh);
+                        return { 
+                            setPosition: (x, y, z) => mesh.position.set(x, y, z),
+                            setShape: (shape) => {
+                                let newGeo;
+                                if(shape === "Round") newGeo = new THREE.SphereGeometry(0.5);
+                                else newGeo = new THREE.BoxGeometry(1, 1, 1);
+                                mesh.geometry.dispose(); mesh.geometry = newGeo;
+                            },
+                            setColor: (hex) => mesh.material.color.setHex(hex)
+                        };
                     }
-                },
-
-                // Animação (TweenService)
-                TweenService: {
-                    Create: (obj, info, props) => {
-                        return {
-                            Play: () => {
-                                // Animação básica no Three.js (gambiarra de rotação)
-                                const start = performance.now();
-                                const duration = info.Time * 1000; // segundos para ms
-                                const animateTween = (time) => {
-                                    const elapsed = time - start;
-                                    const progress = Math.min(elapsed / duration, 1);
-                                    if(progress < 1) requestAnimationFrame(animateTween);
-                                    else obj.setPosition(props.x || 0, props.y || 0, props.z || 0);
-                                };
-                                requestAnimationFrame(animateTween);
-                            }
-                        }
-                    }
-                },
-
-                // CoreGui
-                CoreGui: {
-                    SetCore: (action, data) => {
-                        if (action === "SendNotification") {
-                            const gui = document.getElementById('core-gui');
-                            const notif = document.createElement('div');
-                            notif.className = 'notification';
-                            notif.innerHTML = `<b>${data.Title}</b><br>${data.Text}`;
-                            gui.appendChild(notif);
-                            setTimeout(() => notif.remove(), 3000);
-                        }
-                    }
-                },
-
+                    return {};
+                }},
+                CoreGui: { SetCore: (action, data) => {
+                    if (action === "SendNotification") showNotification(data.Title, data.Text);
+                }},
                 game: { GetService: (name) => {
-                    if(name === "TweenService") return LuauState.globals.TweenService;
-                    if(name === "CoreGui") return LuauState.globals.CoreGui;
+                    if(name === "CoreGui") return luauState.globals.CoreGui;
                     return {};
                 }}
             });
 
-            // O Script do Jogo
             const gameScript = `
-                print("Bem-vindo à Engine do Exeless!")
-                
+                print("Bem-vindo à Engine do Exeless, ${currentUser}!")
                 local minhaBola = Instance.new("Part")
-                minhaBola.Shape = "Round" -- Suporte a coisas redondas
                 minhaBola.setShape("Round")
                 minhaBola.setPosition(0, 2, 0)
                 minhaBola.setColor(0xff00ff)
-
                 game:GetService("CoreGui"):SetCore("SendNotification", {
                     Title = "Exeless Engine",
-                    Text = "A engine carregou perfeitamente!"
+                    Text = "Logado como ${currentUser}!"
                 })
             `;
-            
             luauState.loadstring(gameScript)();
         }
 
-        // 5. O EXECUTOR DO ADMIN
         window.executeAdminScript = function() {
             if (!isAdmin || !luauState) return;
-            const code = document.getElementById('executor-code').value;
-            try {
-                luauState.loadstring(code)();
-            } catch (e) {
-                console.error("Erro no Executor:", e);
-            }
+            try { luauState.loadstring(document.getElementById('executor-code').value)(); } 
+            catch (e) { console.error("Erro:", e); }
         }
     </script>
 </body>
