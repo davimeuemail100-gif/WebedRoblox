@@ -2,54 +2,54 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exeless Engine | Futuristic Metaverse</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-    body { margin: 0; background: #050505; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
-    .bg-glow { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 5s infinite alternate; }
-    @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Exeless Web Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body { margin: 0; overflow: hidden; font-family: 'Orbitron', sans-serif; background: #050505; color: #fff; }
+        #viewport { width: 100vw; height: 100vh; display: block; }
+        
+        /* Login Screen */
+        #login-screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; background: rgba(0,0,0,0.95); }
+        .logo-container { width: 100px; height: 100px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
+        .logo-container::before { content: ''; position: absolute; width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red); z-index: -1; animation: spin 3s linear infinite; }
+        .logo-xbox { font-size: 50px; color: #fff; font-weight: bold; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .auth-box { display: flex; flex-direction: column; gap: 15px; background: rgba(20,20,20,0.8); padding: 30px; border-radius: 15px; border: 1px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+        input { padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-family: 'Orbitron'; outline: none; }
+        button { padding: 12px; background: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; border-radius: 5px; transition: 0.3s; }
+        button:hover { background: #ff00ff; color: white; }
+        #error-msg { color: #ff4444; font-size: 12px; text-align: center; height: 15px; }
 
-    /* Login e Logo (Mantidos) */
-    #login-screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; background: rgba(0,0,0,0.9); transition: opacity 0.5s; }
-    .logo-container { width: 120px; height: 120px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
-    .logo-container::before { content: ''; position: absolute; width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red); z-index: -1; animation: spin 3s linear infinite; }
-    .logo-xbox { font-size: 60px; color: #fff; font-weight: bold; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .auth-box { display: flex; flex-direction: column; gap: 10px; background: rgba(20,20,20,0.8); padding: 30px; border-radius: 15px; border: 1px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-    input { padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; font-family: 'Orbitron'; outline: none; }
-    input:focus { border-color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
-    button { padding: 12px; background: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; border-radius: 5px; transition: 0.3s; }
-    button:hover { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
-    #error-msg { color: #ff4444; font-size: 12px; height: 15px; text-align: center; }
+        /* Painéis de UI */
+        #inspector { position: absolute; top: 10px; right: 10px; background: rgba(30, 30, 30, 0.9); border: 1px solid #00ffff; padding: 15px; border-radius: 8px; width: 180px; display: none; z-index: 10; }
+        #inspector h3 { margin: 0 0 10px 0; font-size: 12px; color: #00ffff; text-align: center; }
+        .prop-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; }
+        .prop-row label { font-size: 12px; color: #ccc; width: 20px; }
+        .prop-row input { width: 60px; background: #111; border: 1px solid #555; color: #fff; padding: 4px; border-radius: 4px; text-align: right; }
 
-    /* UI do Jogo */
-    #game-container { width: 100%; height: 100%; display: none; position: relative; }
-    #core-gui { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
-    .notification { background: rgba(0,255,255,0.2); border-left: 4px solid #00ffff; padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; backdrop-filter: blur(5px); animation: slideIn 0.5s ease-out; }
-    @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        #tools { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; display: none; z-index: 10; }
+        .tool-btn { background: #333; border: 1px solid #555; color: #fff; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+        .tool-btn.active { background: #00ffff; color: #000; border-color: #00ffff; font-weight: bold; }
 
-    /* Painel de Amigos */
-    #friends-panel { display: none; position: absolute; top: 10px; right: 10px; width: 250px; background: rgba(0,0,0,0.9); border: 1px solid #00ffff; border-radius: 5px; z-index: 20; padding: 15px; box-shadow: 0 0 15px rgba(0,255,255,0.3); }
-    #friends-list { max-height: 200px; overflow-y: auto; font-size: 12px; margin-top: 10px; color: #ccc; }
-    #friends-list div { padding: 5px; border-bottom: 1px solid #333; }
-    #friend-input { width: 90%; margin-bottom: 5px; padding: 8px; font-size: 12px; }
-    #add-friend-btn { width: 100%; font-size: 12px; padding: 8px; background: #00ffff; color: #000; }
-    #toggle-friends-btn { position: absolute; top: 10px; right: 10px; z-index: 30; background: #ff00ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; display: none; }
+        #friends-panel { display: none; position: absolute; top: 80px; left: 10px; width: 200px; background: rgba(0,0,0,0.9); border: 1px solid #00ffff; border-radius: 5px; z-index: 20; padding: 15px; }
+        #friends-list { max-height: 150px; overflow-y: auto; font-size: 12px; margin-top: 10px; color: #ccc; }
+        #friends-list div { padding: 5px; border-bottom: 1px solid #333; }
+        
+        #executor-panel { display: none; position: absolute; bottom: 10px; left: 10px; width: 300px; background: rgba(0,0,0,0.9); border: 1px solid #ff00ff; border-radius: 5px; z-index: 20; padding: 10px; }
+        #executor-code { width: 100%; height: 80px; background: #111; color: #00ff00; border: none; font-family: monospace; resize: none; outline: none; font-size: 12px; }
+        #executor-btn { margin-top: 5px; width: 100%; background: #ff00ff; color: #fff; }
 
-    /* Executor */
-    #executor-panel { display: none; position: absolute; bottom: 10px; left: 10px; width: 400px; background: rgba(0,0,0,0.9); border: 1px solid #ff00ff; border-radius: 5px; z-index: 20; padding: 10px; }
-    #executor-code { width: 100%; height: 80px; background: #111; color: #00ff00; border: none; font-family: monospace; resize: none; outline: none; }
-    #executor-btn { margin-top: 5px; width: 100%; background: #ff00ff; color: #fff; }
-</style>
+        #core-gui { position: absolute; top: 50px; right: 10px; pointer-events: none; z-index: 10; }
+        .notification { background: rgba(0,255,255,0.2); border-right: 4px solid #00ffff; padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; backdrop-filter: blur(5px); animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
-
     <div id="login-screen">
         <div class="logo-container"><div class="logo-xbox">X</div></div>
-        <h1 style="margin: 0; color: #00ffff; text-shadow: 0 0 10px #00ffff;">EXELESS ENGINE</h1>
-        <p style="font-size: 12px; color: #888;">Futuristic Game Platform</p>
+        <h1 style="margin: 0; color: #00ffff; text-shadow: 0 0 10px #00ffff;">EXELESS STUDIO</h1>
+        <p style="font-size: 10px; color: #888; margin-bottom: 20px;">Web Engine v1.0</p>
         
         <div class="auth-box">
             <input type="text" id="username" placeholder="Nome (sem espaços)" autocomplete="off">
@@ -59,30 +59,40 @@
         </div>
     </div>
 
-    <div id="game-container">
-        <button id="toggle-friends-btn" onclick="toggleFriends()">👥 Amigos</button>
-        
-        <!-- Painel de Amigos -->
-        <div id="friends-panel">
-            <div style="color: #00ffff; font-weight: bold; margin-bottom: 5px;">Sua Lista</div>
-            <input type="text" id="friend-input" placeholder="Nome do amigo" autocomplete="off">
-            <button id="add-friend-btn" onclick="addFriend()">ADICIONAR</button>
-            <div id="friends-list">Carregando...</div>
-        </div>
-
-        <div id="core-gui"></div>
-        
-        <div id="executor-panel">
-            <div style="color: #ff00ff; font-size: 12px; margin-bottom: 5px;">⚡ ADMIN EXECUTOR</div>
-            <textarea id="executor-code" placeholder="print('Hackeado!')"></textarea>
-            <button id="executor-btn" onclick="executeAdminScript()">EXECUTAR SCRIPT</button>
-        </div>
+    <div id="tools">
+        <button class="tool-btn active" onclick="setMode('translate', this)">Mover</button>
+        <button class="tool-btn" onclick="setMode('rotate', this)">Girar</button>
+        <button class="tool-btn" onclick="toggleFriends()">👥 Amigos</button>
     </div>
+
+    <div id="inspector">
+        <h3>Propriedades (R6)</h3>
+        <div class="prop-row"><label>X</label><input type="number" id="pos-x" step="0.1" value="0"></div>
+        <div class="prop-row"><label>Y</label><input type="number" id="pos-y" step="0.1" value="0"></div>
+        <div class="prop-row"><label>Z</label><input type="number" id="pos-z" step="0.1" value="0"></div>
+        <div class="prop-row"><label>Rot</label><input type="number" id="rot-y" step="0.1" value="0"></div>
+    </div>
+
+    <div id="friends-panel">
+        <div style="color: #00ffff; font-weight: bold; font-size: 12px;">Sua Lista</div>
+        <input type="text" id="friend-input" placeholder="Nome do amigo" style="width: 90%; margin: 5px 0; padding: 5px; font-size: 12px;">
+        <button onclick="addFriend()" style="width: 100%; padding: 5px; font-size: 12px;">ADICIONAR</button>
+        <div id="friends-list">Carregando...</div>
+    </div>
+
+    <div id="executor-panel">
+        <div style="color: #ff00ff; font-size: 12px; margin-bottom: 5px;">⚡ ADMIN EXECUTOR</div>
+        <textarea id="executor-code" placeholder="print('Rodando no Roblox Web!')"></textarea>
+        <button id="executor-btn" onclick="executeAdminScript()">EXECUTAR SCRIPT</button>
+    </div>
+
+    <div id="core-gui"></div>
 
     <script type="importmap">
         {
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
                 "luau-web": "https://cdn.jsdelivr.net/gh/xNasuni/luau-web@main/dist/luauweb.min.js"
             }
         }
@@ -90,34 +100,32 @@
 
     <script type="module">
         import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { TransformControls } from 'three/addons/controls/TransformControls.js';
         import { LuauState } from 'luau-web';
 
-        let luauState, isAdmin, currentUser;
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050505);
+        // Variáveis Globais
+        let luauState, isAdmin = false, currentUser = "";
+        let scene, camera, renderer, orbit, transform, playerCharacter;
 
-        // --- LOGIN ---
+        // --- SISTEMA DE LOGIN ---
         window.login = async function() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const errMsg = document.getElementById('error-msg');
 
-            if (!user || !pass) return errMsg.innerText = "Preencha todos os campos.";
-            if (user.includes(' ')) return errMsg.innerText = "O nome não pode ter espaços.";
+            if (!user || !pass) return errMsg.innerText = "Preencha tudo.";
+            if (user.includes(' ')) return errMsg.innerText = "Sem espaços no nome!";
 
-            // Tenta Logar primeiro
             let res = await fetch('/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'login', username: user, password: pass })
             });
             let data = await res.json();
 
-            // Se não existir, tenta cadastrar
             if (!res.ok && data.error === 'Usuário não encontrado.') {
                 res = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'register', username: user, password: pass })
                 });
                 data = await res.json();
@@ -125,17 +133,13 @@
 
             if (!res.ok) return errMsg.innerText = data.error;
 
-            // Sucesso
             isAdmin = data.isAdmin;
             currentUser = user;
-            document.getElementById('login-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('login-screen').style.display = 'none';
-                startEngine();
-            }, 500);
+            document.getElementById('login-screen').style.display = 'none';
+            initEngine();
         }
 
-        // --- AMIGOS ---
+        // --- SISTEMA DE AMIGOS ---
         window.toggleFriends = function() {
             const panel = document.getElementById('friends-panel');
             panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
@@ -144,8 +148,7 @@
 
         async function loadFriends() {
             const res = await fetch('/api/friends', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'list', username: currentUser })
             });
             const data = await res.json();
@@ -153,32 +156,134 @@
             listDiv.innerHTML = '';
             if(data.friends && data.friends.length > 0) {
                 data.friends.forEach(f => listDiv.innerHTML += `<div>🟢 ${f}</div>`);
-            } else {
-                listDiv.innerHTML = '<div>Nenhum amigo ainda.</div>';
-            }
+            } else { listDiv.innerHTML = '<div>Nenhum amigo.</div>'; }
         }
 
         window.addFriend = async function() {
             const friendName = document.getElementById('friend-input').value;
             if(!friendName) return;
-            
             const res = await fetch('/api/friends', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'add', username: currentUser, friendUsername: friendName })
             });
             const data = await res.json();
-            
-            if(res.ok) {
-                document.getElementById('friend-input').value = '';
-                loadFriends();
-                showNotification("Amigos", `${friendName} adicionado com sucesso!`);
-            } else {
-                alert(data.error); // Mostra o bloqueio de limite (100 ou 1000)
-            }
+            if(res.ok) { document.getElementById('friend-input').value = ''; loadFriends(); showNotification("Amigos", `${friendName} adicionado!`); } 
+            else { alert(data.error); }
         }
 
-        // --- ENGINE 3D E LUAU (Mantida) ---
+        // --- ENGINE 3D ---
+        function initEngine() {
+            document.getElementById('tools').style.display = 'flex';
+            document.getElementById('inspector').style.display = 'block';
+            if (isAdmin) document.getElementById('executor-panel').style.display = 'block';
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB);
+            scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(10, 10, 15);
+
+            renderer = new THREE.WebGLRenderer({ antialias: false }); // Otimizado p/ Mobile/TV
+            renderer.setPixelRatio(0.7); 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            document.body.appendChild(renderer.domElement);
+
+            orbit = new OrbitControls(camera, renderer.domElement);
+            orbit.target.set(0, 2, 0);
+            orbit.update();
+
+            transform = new TransformControls(camera, renderer.domElement);
+            transform.addEventListener('dragging-changed', (e) => { orbit.enabled = !e.value; });
+            scene.add(transform);
+
+            // Luzes
+            const hemi = new THREE.HemisphereLight(0xffffff, 0x444444); hemi.position.set(0, 20, 0); scene.add(hemi);
+            const dir = new THREE.DirectionalLight(0xffffff); dir.position.set(10, 20, 10); dir.castShadow = true; scene.add(dir);
+
+            // Baseplate
+            const baseplate = new THREE.Mesh(new THREE.BoxGeometry(50, 1, 50), new THREE.MeshStandardMaterial({ color: 0x555555 }));
+            baseplate.position.y = -0.5; baseplate.receiveShadow = true; scene.add(baseplate);
+
+            // Boneco R6
+            playerCharacter = new THREE.Group();
+            function createPart(w, h, d, c, x, y, z) {
+                const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color: c }));
+                m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m;
+            }
+            playerCharacter.add(createPart(1, 2, 1, 0x0000ff, 0, 3, 0)); // Torso
+            playerCharacter.add(createPart(1.2, 1.2, 1.2, 0xffff00, 0, 4.6, 0)); // Cabeça
+            playerCharacter.add(createPart(1, 2, 1, 0xffff00, -1, 3, 0)); // Braço Esq
+            playerCharacter.add(createPart(1, 2, 1, 0xffff00, 1, 3, 0)); // Braço Dir
+            playerCharacter.add(createPart(1, 2, 1, 0x00ff00, -0.5, 1, 0)); // Perna Esq
+            playerCharacter.add(createPart(1, 2, 1, 0x00ff00, 0.5, 1, 0)); // Perna Dir
+            scene.add(playerCharacter);
+            transform.attach(playerCharacter);
+
+            // Inspector
+            const pX = document.getElementById('pos-x'), pY = document.getElementById('pos-y'), pZ = document.getElementById('pos-z'), rY = document.getElementById('rot-y');
+            transform.addEventListener('change', () => {
+                pX.value = playerCharacter.position.x.toFixed(2);
+                pY.value = playerCharacter.position.y.toFixed(2);
+                pZ.value = playerCharacter.position.z.toFixed(2);
+                rY.value = playerCharacter.rotation.y.toFixed(2);
+            });
+            const updateInputs = () => {
+                playerCharacter.position.set(parseFloat(pX.value)||0, parseFloat(pY.value)||0, parseFloat(pZ.value)||0);
+                playerCharacter.rotation.y = parseFloat(rY.value)||0;
+            };
+            pX.addEventListener('input', updateInputs); pY.addEventListener('input', updateInputs);
+            pZ.addEventListener('input', updateInputs); rY.addEventListener('input', updateInputs);
+
+            // --- CONTROLES WASD / TECLADO NUMÉRICO ---
+            const keys = { w: false, a: false, s: false, d: false };
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                if (e.code === 'KeyW' || e.code === 'Numpad8' || e.code === 'ArrowUp') keys.w = true;
+                if (e.code === 'KeyS' || e.code === 'Numpad2' || e.code === 'ArrowDown') keys.s = true;
+                if (e.code === 'KeyA' || e.code === 'Numpad4' || e.code === 'ArrowLeft') keys.a = true;
+                if (e.code === 'KeyD' || e.code === 'Numpad6' || e.code === 'ArrowRight') keys.d = true;
+            });
+            window.addEventListener('keyup', (e) => {
+                if (e.code === 'KeyW' || e.code === 'Numpad8' || e.code === 'ArrowUp') keys.w = false;
+                if (e.code === 'KeyS' || e.code === 'Numpad2' || e.code === 'ArrowDown') keys.s = false;
+                if (e.code === 'KeyA' || e.code === 'Numpad4' || e.code === 'ArrowLeft') keys.a = false;
+                if (e.code === 'KeyD' || e.code === 'Numpad6' || e.code === 'ArrowRight') keys.d = false;
+            });
+
+            const fwd = new THREE.Vector3(), right = new THREE.Vector3(), move = new THREE.Vector3();
+            function animate() {
+                requestAnimationFrame(animate);
+                if (!transform.dragging) {
+                    camera.getWorldDirection(fwd); fwd.y = 0; fwd.normalize();
+                    right.crossVectors(fwd, camera.up).normalize();
+                    move.set(0, 0, 0);
+
+                    if (keys.w) move.add(fwd); if (keys.s) move.sub(fwd);
+                    if (keys.d) move.add(right); if (keys.a) move.sub(right);
+
+                    if (move.length() > 0) {
+                        move.normalize().multiplyScalar(0.15); // Velocidade
+                        playerCharacter.position.add(move);
+                        playerCharacter.rotation.y = Math.atan2(move.x, move.z);
+                        pX.value = playerCharacter.position.x.toFixed(2); pZ.value = playerCharacter.position.z.toFixed(2); rY.value = playerCharacter.rotation.y.toFixed(2);
+                        transform.attach(playerCharacter);
+                    }
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            initLuau();
+        }
+
+        window.setMode = function(mode, btn) {
+            transform.setMode(mode);
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
         function showNotification(title, text) {
             const gui = document.getElementById('core-gui');
             const notif = document.createElement('div');
@@ -188,42 +293,16 @@
             setTimeout(() => notif.remove(), 3000);
         }
 
-        function startEngine() {
-            document.getElementById('game-container').style.display = 'block';
-            document.getElementById('toggle-friends-btn').style.display = 'block';
-            if (isAdmin) document.getElementById('executor-panel').style.display = 'block';
-
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 5, 10);
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('game-container').appendChild(renderer.domElement);
-            
-            const light = new THREE.DirectionalLight(0xffffff, 2); light.position.set(5, 10, 7); scene.add(light);
-            scene.add(new THREE.AmbientLight(0x404040));
-            scene.add(new THREE.GridHelper(50, 50, 0x00ffff, 0x333333));
-
-            (function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); })();
-            initLuau();
-        }
-
+        // --- LUAU WEB ASSEMBLY ---
         async function initLuau() {
             luauState = await LuauState.createAsync({
                 print: (msg) => console.log("[Luau]", msg),
                 Instance: { new: (className) => {
                     if (className === "Part") {
-                        const geometry = new THREE.BoxGeometry(1, 1, 1);
-                        const material = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.5 });
-                        const mesh = new THREE.Mesh(geometry, material);
-                        scene.add(mesh);
+                        const mesh = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshStandardMaterial({ color: 0xff00ff }));
+                        mesh.position.set(0, 5, 0); scene.add(mesh);
                         return { 
-                            setPosition: (x, y, z) => mesh.position.set(x, y, z),
-                            setShape: (shape) => {
-                                let newGeo;
-                                if(shape === "Round") newGeo = new THREE.SphereGeometry(0.5);
-                                else newGeo = new THREE.BoxGeometry(1, 1, 1);
-                                mesh.geometry.dispose(); mesh.geometry = newGeo;
-                            },
+                            setPosition: (x,y,z) => mesh.position.set(x,y,z),
                             setColor: (hex) => mesh.material.color.setHex(hex)
                         };
                     }
@@ -238,18 +317,10 @@
                 }}
             });
 
-            const gameScript = `
-                print("Bem-vindo à Engine do Exeless, ${currentUser}!")
-                local minhaBola = Instance.new("Part")
-                minhaBola.setShape("Round")
-                minhaBola.setPosition(0, 2, 0)
-                minhaBola.setColor(0xff00ff)
-                game:GetService("CoreGui"):SetCore("SendNotification", {
-                    Title = "Exeless Engine",
-                    Text = "Logado como ${currentUser}!"
-                })
-            `;
-            luauState.loadstring(gameScript)();
+            luauState.loadstring(`
+                print("Luau WASM Carregado com sucesso no Exeless Studio!")
+                game:GetService("CoreGui"):SetCore("SendNotification", { Title = "Engine", Text = "WASM Ativo!" })
+            `)();
         }
 
         window.executeAdminScript = function() {
